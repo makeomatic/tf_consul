@@ -1,0 +1,7 @@
+# atlas token
+atlas.env
+.terraform
+images/*
+*/*.tfstate
+*/*.tfstate.backup
+!.gitkeep

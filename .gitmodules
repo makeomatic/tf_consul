@@ -1,0 +1,3 @@
+[submodule "tf_compute"]
+	path = tf_compute
+	url = https://github.com/stackfeed/tf_compute.git

@@ -1,4 +1,4 @@
 
 update:
-	git submodule update --remote
-	ln -f ./modules/tf_default_compute/aws/* aws/
+	git submodule update --remote tf_compute
+	ln -f tf_compute/aws.tf aws/

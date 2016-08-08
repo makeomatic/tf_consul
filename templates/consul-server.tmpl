@@ -1,8 +1,7 @@
 docker run -d --name=consul-server --restart=always \
-  -p ${dns_port}:8600 -p ${dns_port}:8600/udp \
-  -p 8300:8300 -p 8301:8301 -p 8301:8301/udp -p 8302:8302 -p 8302:8302/udp \
-  -p 8400:8400 -p 8500:8500 \
-  ${image} \
-      -advertise $(ip addr show dev ${advertise_interface} | sed -n 's/.*inet \(.*\)\/.*/\1/p') \
-      ${coalesce(args, default_args)}
-# cheat sheet: No spaces on the end after \ and be careful with escaping
+    -p ${dns_port}:8600 -p ${dns_port}:8600/udp \
+    -p 8300:8300 -p 8301:8301 -p 8301:8301/udp -p 8302:8302 -p 8302:8302/udp \
+    -p 8400:8400 -p 8500:8500 \
+${image} \
+    -advertise $(ip addr show dev ${advertise_interface} | sed -n 's/.*inet \(.*\)\/.*/\1/p') \
+    ${coalesce(args, default_args)}

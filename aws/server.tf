@@ -84,7 +84,7 @@ resource "null_resource" "start-consul" {
         inline = [
             ". /etc/profile",
             "sudo usermod -aG docker $(id -un)",
-            "while (! docker version 2>/dev/null); do sleep 5; done",
+            "while (! docker version 2>/dev/null); do sleep 1; done",
             "${data.template_file.consul-server.rendered}"
         ]
     }

@@ -16,7 +16,7 @@ variable "machine_type" {
 
 variable "instance_image" {
     description = "Default gce image used for instance creation."
-    default = "ubuntu-1604-xenial-v20160815"
+    default = ""
 }
 
 variable "tags" {
@@ -39,4 +39,68 @@ variable "metadata" {
 variable "can_ip_forward" {
     description = "Whether to allow sending and receiving of packets with non-matching source or destination IPs."
     default = false
+}
+
+variable "platform" {
+    description = "Platform (OS) used for the new instance."
+    default = "ubuntu"
+}
+
+# Use this instead of passing sshKeys directly via metadata.
+variable "sshKeys" {
+    description = "List of ssh keys (user:pubkey items) to enable on machine along with the default user."
+    default = []
+}
+
+variable "pubkey_path" {
+    description = "Path to pub"
+    default = "default_value"
+}
+
+variable "user" {
+    description = "Default user uded for instance access."
+    default = ""
+}
+
+variable "user_map" {
+    default = {
+        ubuntu  = "ubuntu"
+    }
+}
+
+variable "image_map" {
+    description = "Default image map, specifies what image to use for a particular OS."
+    default = {
+        ubuntu = "ubuntu-1604-xenial-v20160815"
+    }
+}
+
+variable "metadata" {
+    description = "Metadata passed to an instance upon creation."
+    default = {}
+}
+
+data "null_data_source" "gce" {
+    inputs = {
+        image  = "${coalesce(var.instance_image,  "${lookup(var.image_map, "${var.platform}")}")}"
+        user = "${coalesce(var.user, "${lookup(var.user_map, var.platform)}")}"
+    }
+}
+
+# Metadata helper used to calculate sshKeys
+data "null_data_source" "metadata-default" {
+    inputs = {
+        sshKeys = "${join("\n",
+            distinct(
+            concat(
+                list("${var.user}:${var.pubkey_path}")
+                var.sshKeys
+            ))
+        )}"
+    }
+}
+
+# Compound metadata
+data "null_data_source" "metadata" {
+    inputs = "${merge(var.metadata-default, var.metadata)}"
 }

@@ -9,9 +9,12 @@ resource "google_compute_instance" "server" {
         image = "${data.null_data_source.gce.outputs.image}"
     }
 
-    network_interface "${var.network_interface}"
+    network_interface = "${var.network_interface}"
 
-    metadata "${data.null_data_source.metadata.outputs}"
+    metadata = "${merge(
+        data.null_data_source.metadata.outputs,
+        map("user-data", data.template_file.user-data.rendered)
+    )}"
 }
 
 # Compound cloud-init config

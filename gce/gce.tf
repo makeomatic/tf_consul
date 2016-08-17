@@ -24,6 +24,12 @@ variable "tags" {
     default = []
 }
 
+variable "advertise_interface" {
+    # By default we publish services on the GCE private interface.
+    description = "Use ip address of the interface to advertise a docker container."
+    default = "eth0"
+}
+
 variable "network_interface" {
     description = "Networks to attach to the instance."
     default = {

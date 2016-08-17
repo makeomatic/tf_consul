@@ -1,0 +1,20 @@
+#!/bin/sh
+# !This is a terraform template, be careful escape shell variables notation as $${}
+
+ADDR=$(ip addr show dev ${advertise_interface} | sed -n 's/.*inet \(.*\)\/.*/\1/p')
+
+confdir=/etc/nomad
+template=nomad.conf.tmpl
+
+# Evaluate advertise address and generate nomad.conf
+sed "s/\$${advertise_address}/$$ADDR/" $confdir/$template > $confdir/nomad.conf
+
+# Create a volume directory for nomad
+mkdir -p /var/lib/nomad
+
+# Run nomad container as daemon (+ restart always)
+docker run -d --name=nomad --restart=always \
+    -p 4646:4646 -p 4647:4647 -p 4648:4648 -p 4648:4648/udp \
+    -v $confdir:/config -v /var/lib/nomad:/data \
+${image} \
+    -config nomad.conf -config /config

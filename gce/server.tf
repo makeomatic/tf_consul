@@ -13,3 +13,81 @@ resource "google_compute_instance" "server" {
 
     metadata "${data.null_data_source.metadata.outputs}"
 }
+
+# Compound cloud-init config
+#
+data "template_cloudinit_config" "default" {
+  gzip          = true
+  base64_encode = true
+
+  part {
+    content_type = "text/cloud-config"
+    content      = "${data.template_file.user-data.rendered}"
+  }
+
+  part {
+    filename = "00.get-docker.sh"
+    content_type = "text/x-shellscript"
+    content      = "${file("${path.module}/../files/get-docker.sh")}"
+  }
+
+  part {
+    filename = "01.start-consul.sh"
+    content_type = "text/x-shellscript"
+    content      = "${data.template_file.start-consul.rendered}"
+  }
+
+  part {
+    filename = "02.start-nomad.sh"
+    content_type = "text/x-shellscript"
+    content      = "${data.template_file.start-nomad.rendered}"
+  }
+}
+
+# When starting consul default -bootstrap-expect and -join options are substitued,
+# mind that args do override the behavior (ex. if you might want to join an
+# existing cluster).
+#
+data "template_file" "start-consul" {
+    template = "${file("${path.module}/../templates/start-consul.sh.tmpl")}"
+    vars {
+        servers = "${var.servers}"
+        image = "${var.image}"
+        args  = "${var.args}"
+        dns_port = "${var.dns_port}"
+        advertise_interface = "${var.advertise_interface}"
+        master_address = "${google_compute_instance.server.0.network_interface.0.address}"
+    }
+}
+
+# This nomad setup doesn't support args overriding.
+#
+data "template_file" "start-nomad" {
+    template = "${file("${path.module}/../templates/start-nomad.sh.tmpl")}"
+    vars {
+        image = "${var.nomad_image}"
+        advertise_interface = "${var.advertise_interface}"
+    }
+}
+
+
+# Nomad config template
+#
+data "template_file" "nomad-conf" {
+    template = "${file("${path.module}/../templates/nomad.conf.tmpl")}"
+    vars {
+        servers = "${var.servers}"
+        region = "${var.nomad_region}"
+        datacenter = "${var.nomad_datacenter}"
+        consul_address = "${google_compute_instance.server.0.network_interface.0.address}"
+    }
+}
+
+# User-Data template
+#
+data "template_file" "user-data" {
+    template = "${file("${path.module}/../templates/user-data.cc.tmpl")}"
+    vars {
+        nomad_conf_content = "${base64encode(data.template_file.nomad-conf.rendered)}"
+    }
+}

@@ -8,9 +8,14 @@ variable "nomad" {
     default = true
 }
 
-variable "join_address" {
-    description = "If address is given we don't bootstrap a new cluster, but rather join to the existing one."
-    default = ""
+variable "nomad_region" {
+    description = "Specifies nomad region."
+    default = "global"
+}
+
+variable "nomad_datacenter" {
+    description = "Specifies nomad datacenter."
+    default = "dc1"
 }
 
 variable "image" {
@@ -24,7 +29,7 @@ variable "nomad_image" {
 }
 
 variable "args" {
-    description = "Default arguments passed to consul."
+    description = "Arguments passed to consul (override default initialization logic)."
     default = ""
 }
 

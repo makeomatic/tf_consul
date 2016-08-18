@@ -6,7 +6,7 @@ ADDR=$(ip addr show dev ${advertise_interface} | sed -n 's/.*inet \(.*\)\/.*/\1/
 
 # Default consul arguments can override the bellow logic
 ARGS=${args}
-ARGS="$${ARGS:--bootstrap-expect $$SERVERS -join ${master_address}}"
+ARGS="$${ARGS:--bootstrap-expect $$SERVERS -join ${seed_address}}"
 
 # Create directory for consul volume
 mkdir -p /var/lib/consul

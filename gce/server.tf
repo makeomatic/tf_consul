@@ -27,94 +27,91 @@ resource "google_compute_instance" "server" {
     network_interface {
         network = "${var.network}"
         subnetwork = "${var.subnetwork}"
+        access_config {
+            nat_ip = "${var.nat_ip}"
+        }
     }
 
     metadata = "${merge(
         data.null_data_source.metadata.outputs,
-        map()
+        map("user-data", data.template_cloudinit_config.default.rendered)
     )}"
-        # map("user-data", data.template_file.user-data.rendered)
-
 }
+
+# Write consul input.json configuration file
+#
+resource "null_resource" "input_file" {
+    count = "${var.servers}"
+
+    triggers {
+        seed_address = "google_compute_instance.server.0.network_interface.0.address"
+    }
+
+    connection {
+        host = "${
+            element(
+                google_compute_instance.server.*.network_interface.0.access_config.0.assigned_nat_ip,
+                count.index
+            )}"
+        user = "${data.null_data_source.gce.outputs.user}"
+        private_key = "${file(var.key_path)}"
+    }
+
+    provisioner "remote-exec" {
+        inline = [
+            "sudo mkdir -p /var/lib/terraform/consul",
+            "sudo chown $(id -un):$(id -gn) /var/lib/terraform/consul"
+        ]
+    }
+
+    provisioner "file" {
+        content = "${jsonencode(data.null_data_source.input.outputs)}"
+        destination = "/var/lib/terraform/consul/input.json"
+    }
+}
+
+
+# Input required for consul and nomad
+#
+data "null_data_source" "input" {
+    inputs {
+        # Address of the first created node - all others connect to the seeder.
+        seed_address = "${element(google_compute_instance.server.*.network_interface.0.address, 0)}"
+        servers = "${var.servers}"
+        advertise_ipnum = "${var.advertise_ipnum}"
+
+        # Consul specific
+        consul_image = "${var.consul_image}"
+        args = "${var.args}"
+        dns_port = "${var.dns_port}"
+    }
+}
+
 
 # Compound cloud-init config
 #
 data "template_cloudinit_config" "default" {
-  gzip          = true
-  base64_encode = true
+    gzip          = false
+    base64_encode = false
 
-  part {
-    filename = "include-list.cc"
-    content_type = "text/x-include-url"
-    content      = "${file("${path.module}/../include-list.cc")}"
-  }
+    part {
+        filename = "include-list.cc"
+        content_type = "text/x-include-url"
+        content      = "${file("${path.module}/../include-list.cc")}"
+    }
 
-  # part {
-  #   filename = "01.start-consul.sh"
-  #   content_type = "text/x-shellscript"
-  #   content      = "${data.template_file.start-consul.rendered}"
-  # }
-
-  # part {
-  #   filename = "02.start-nomad.sh"
-  #   content_type = "text/x-shellscript"
-  #   content      = "${data.template_file.start-nomad.rendered}"
-  # }
-
-  # part {
-  #   content_type = "text/cloud-config"
-  #   content      = "${data.template_file.user-data.rendered}"
-  # }
+    part {
+        content_type = "text/cloud-config"
+        content      = "${data.template_file.user-data.rendered}"
+    }
 }
 
 
-# # User-Data template
-# #
-# data "template_file" "user-data" {
-#     template = "${file("${path.module}/../templates/user-data.cc.tmpl")}"
-#     vars {
-#         nomad_conf_content = "${base64encode(data.template_file.nomad-conf.rendered)}"
-#     }
-# }
-
-
-# # When starting consul default -bootstrap-expect and -join options are substitued,
-# # mind that args do override the behavior (ex. if you might want to join an
-# # existing cluster).
-# #
-# data "template_file" "start-consul" {
-#     template = "${file("${path.module}/../templates/start-consul.sh.tmpl")}"
-#     vars {
-#         servers = "${var.servers}"
-#         image = "${var.image}"
-#         args  = "${var.args}"
-#         dns_port = "${var.dns_port}"
-#         advertise_interface = "${var.advertise_interface}"
-#         seed_address = "${google_compute_instance.server.0.network_interface.0.address}"
-#     }
-# }
-
-# # This nomad setup doesn't support args overriding.
-# #
-# data "template_file" "start-nomad" {
-#     template = "${file("${path.module}/../templates/start-nomad.sh.tmpl")}"
-#     vars {
-#         image = "${var.nomad_image}"
-#         advertise_interface = "${var.advertise_interface}"
-#     }
-# }
-
-
-# # Nomad config template
-# #
-# data "template_file" "nomad-conf" {
-#     template = "${file("${path.module}/../templates/nomad.conf.tmpl")}"
-#     vars {
-#         servers = "${var.servers}"
-#         region = "${var.nomad_region}"
-#         datacenter = "${var.nomad_datacenter}"
-#         seed_address = "${google_compute_instance.server.0.network_interface.0.address}"
-#     }
-# }
-
-
+# User-Data template
+#
+data "template_file" "user-data" {
+    template = "${file("${path.module}/../templates/user-data.cc.tmpl")}"
+    vars {
+        start-consul-content = "${file("${path.module}/../scripts/start-consul.sh")}"
+    }
+}

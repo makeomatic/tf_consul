@@ -18,7 +18,7 @@ variable "nomad_datacenter" {
     default = "dc1"
 }
 
-variable "image" {
+variable "consul_image" {
     description = "Docker container used for consul server."
     default = "gliderlabs/consul-server"
 }

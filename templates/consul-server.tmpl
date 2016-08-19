@@ -3,5 +3,5 @@ docker run -d --name=consul-server --restart=always \
     -p 8300:8300 -p 8301:8301 -p 8301:8301/udp -p 8302:8302 -p 8302:8302/udp \
     -p 8400:8400 -p 8500:8500 \
 ${image} \
-    -advertise $(ip addr show dev ${advertise_interface} | sed -n 's/.*inet \(.*\)\/.*/\1/p') \
+    -advertise $(hostname --all-ip-addresses | cut -d' ' -f${advertise_ipnum}) \
     ${coalesce(args, default_args)}

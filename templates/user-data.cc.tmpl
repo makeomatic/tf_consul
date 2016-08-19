@@ -1,20 +1,21 @@
 #cloud-config
 # vim: syntax=yaml
 #
+# This a terraform template file!
 
-package_upgrade:
-packages:
-  - python
-  - curl
-  - wget
-
-write_files:
-- encoding: b64
-    content: ${nomad_conf_content}
-    owner: root:root
-    path: /etc/nomad/nomad.conf.tmpl
-    permissions: '0644'
-
+merge_how: "dict(recurse_array,no_replace)+list(append)"
 
 runcmd:
-  - curl https://raw.githubusercontent.com/stackfeed/scripts/master/python/jsonenv
+  # We can't write directly to /var/lib/cloud/scripts/per-once since stages
+  # are not treated in oreder on Systemd Xenial bugs bugs:(
+  - cloud-init-per once start-consul /var/lib/terraform/consul/start-consul.sh
+
+# ---------- Files ----------
+#
+
+write_files:
+- path: /var/lib/terraform/consul/start-consul.sh
+  owner: root:root
+  permissions: '0755'
+  encoding: b64
+  content: ${base64encode(start-consul-content)}

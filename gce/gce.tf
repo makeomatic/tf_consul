@@ -24,10 +24,10 @@ variable "tags" {
     default = []
 }
 
-variable "advertise_interface" {
-    # By default we publish services on the GCE private interface.
-    description = "Use ip address of the interface to advertise a docker container."
-    default = "eth0"
+variable "advertise_ipnum" {
+    # We publish docker containers on the first avialable ip address (address of private NIC).
+    description = "Use ip address of the first interface to advertise a docker container."
+    default = "1"
 }
 
 variable "network" {
@@ -37,6 +37,11 @@ variable "network" {
 
 variable "subnetwork" {
     description = "Name of subnetwork to use."
+    default = ""
+}
+
+variable "nat_ip" {
+    description = "Ephemeral address value if not given chosen automatically."
     default = ""
 }
 
@@ -62,8 +67,13 @@ variable "sshKeys" {
 }
 
 variable "pubkey_path" {
-    description = "Path to pub"
-    default = "default_value"
+    description = "Path to public key file."
+    default = "~/.ssh/google_compute_engine.pub"
+}
+
+variable "key_path" {
+    description = "Path to private key file."
+    default = "~/.ssh/google_compute_engine"
 }
 
 variable "user" {

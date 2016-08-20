@@ -84,6 +84,12 @@ data "null_data_source" "input" {
         consul_image = "${var.consul_image}"
         args = "${var.args}"
         dns_port = "${var.dns_port}"
+
+        # Nomad specfic
+        nomad_enabled = "${var.nomad_enabled}"
+        nomad_image = "${var.nomad_image}"
+        nomad_region = "${var.nomad_region}"
+        nomad_datacenter = "${var.nomad_datacenter}"
     }
 }
 
@@ -113,5 +119,7 @@ data "template_file" "user-data" {
     template = "${file("${path.module}/../templates/user-data.cc.tmpl")}"
     vars {
         start-consul-content = "${file("${path.module}/../scripts/start-consul.sh")}"
+        start-nomad-content = "${file("${path.module}/../scripts/start-nomad.sh")}"
+        nomad-conf-content = "${file("${path.module}/../templates/nomad.conf.hcl.tmpl")}"
     }
 }

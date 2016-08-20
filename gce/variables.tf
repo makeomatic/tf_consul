@@ -3,7 +3,7 @@ variable "servers" {
     description = "The number of Consul servers to launch."
 }
 
-variable "nomad" {
+variable "nomad_enabled" {
     description = "Specifies whether to bootstrap nomad along with consul."
     default = true
 }
@@ -25,7 +25,7 @@ variable "consul_image" {
 
 variable "nomad_image" {
     description = "Specifies nomad container to use."
-    default = "makeomatic/nomad"
+    default = "makeomatic/nomad:0.4"
 }
 
 variable "args" {

@@ -19,7 +19,7 @@ mkdir -p $confdir /var/lib/nomad
 # Generate config and run nomad container as daemon (+ restart always)
 dockerize -template $template:$confdir/$confname
 
-docker run -d --name=nomad --restart=always \
+docker run -d --name=nomad-server --restart=always \
     -p 4646:4646 -p 4647:4647 -p 4648:4648 -p 4648:4648/udp \
     -v $confdir:/config -v /var/lib/nomad:/data \
 $NOMAD_IMAGE

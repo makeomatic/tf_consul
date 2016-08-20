@@ -28,17 +28,17 @@ variable "nomad_image" {
     default = "makeomatic/nomad:0.4"
 }
 
-variable "args" {
+variable "consul_args" {
     description = "Arguments passed to consul (override default initialization logic)."
     default = ""
+}
+
+variable "consul_dnsport" {
+    description = "Consul dns port to bind to."
+    default = 8600
 }
 
 variable "tagName" {
     default = "consul"
     description = "AWS consul instance name tag."
-}
-
-variable "dns_port" {
-    description = "Consul dns_port to bind to."
-    default = 8600
 }

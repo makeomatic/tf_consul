@@ -92,8 +92,8 @@ data "null_data_source" "input" {
 
         # Consul specific
         consul_image = "${var.consul_image}"
-        args = "${var.args}"
-        dns_port = "${var.dns_port}"
+        consul_args = "${var.consul_args}"
+        consul_dnsport = "${var.consul_dnsport}"
 
         # Nomad specfic
         nomad_enabled = "${var.nomad_enabled}"

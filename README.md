@@ -41,11 +41,15 @@ export AWS_SECRET_ACCESS_KEY="HAVxxxbNL"
 Next define the module configuration:
 
 ```
+provider "aws" {
+    ...
+}
+
 module "consul" {
-  source = "github.com/stackfeed/tf_consul//aws"
-  servers = 3
-  key_name = "aws_key_name"
-  key_path = "~/.ssh/some_pkey_path"
+    source = "github.com/stackfeed/tf_consul//aws"
+    servers = 3
+    key_name = "aws_key_name"
+    key_path = "~/.ssh/some_pkey_path"
 }
 ```
 
@@ -56,11 +60,17 @@ Note that `args` is optional and can be omitted in this case a consul cluster wi
 Include module:
 
 ```
+provider "google" {
+    ...
+}
+
+module "consul" {
     source = "github.com/stackfeed/tf_consul//gce"
     servers = 3
 
     region = "set gce region"
     zone = "set gce availability zone"
+}
 ```
 
 Note that `args` is optional and can be omitted in this case a consul cluster will be brought up with `-bootstrap-expect 3` and perform automated cluster setup.

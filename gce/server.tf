@@ -11,12 +11,22 @@ provider "google" {
     region = "${var.region}"
 }
 
+
 resource "google_compute_instance" "server" {
     count = "${var.servers}"
     name = "${var.tagName}-${count.index}"
     machine_type = "${var.machine_type}"
-    zone = "${var.zone}"
     tags = [ "${var.tags}" ]
+
+    # RR cross-zone distribution is enabled by default.
+    # Either set var.zone or set var.cross_zone_distribution to false to disable!
+    zone = "${coalesce(
+                var.zone,
+                element(
+                    split(" ", data.null_data_source.gce.outputs.region_zones),
+                    count.index * var.cross_zone_distribution
+                )
+            )}"
 
     can_ip_forward = true
 

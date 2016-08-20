@@ -13,20 +13,6 @@ variable "region" {
     default = "eu-central-1"
 }
 
-variable "region_aznumber" {
-    default = {
-        us-east-1 = 4
-        us-west-1 = 2
-        us-west-2 = 3
-        eu-west-1 = 3
-        eu-central-1 = 2
-        ap-southeast-1 = 2
-        ap-southeast-2 = 2
-        ap-northeast-1 = 2
-        sa-east-1 = 3
-    }
-}
-
 variable "availability_zone" {
     # Also there's data.aws_availability_zones.available.names which can be used.
     description = "Specifies availability zone to use."

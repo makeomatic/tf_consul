@@ -120,10 +120,20 @@ variable "key_path" {
     description = "Path to the private key used for ssh connection."
 }
 
-variable "advertise_interface" {
-    # By default we publish services on the AWS private interface.
-    description = "Use ip address of the interface to advertise a docker container."
-    default = "eth0"
+variable "advertise_ipnum" {
+    # We publish docker containers on the first avialable ip address (address of private NIC).
+    description = "Use ip address of the first interface to advertise a docker container."
+    default = "1"
+}
+
+variable "volume_size_map" {
+    description = "Default available size for specific volume."
+    default = {
+        gp2 = 1
+        io1 = 4
+        st1 = 500
+        sc1 = 500
+    }
 }
 
 #
@@ -157,6 +167,7 @@ output "default-vpc" { value = "${var.default-vpc}" }
 output "vpc_id" { value = "${var.vpc_id}" }
 output "subnet_id" { value = "${var.subnet_id}" }
 output "security_group" { value = "${var.security_group}" }
+output "volume_size_map" { value = "${var.volume_size_map}" }
 
 output "ami" { value = "${data.null_data_source.aws.outputs["ami"]}" }
 output "user" { value = "${data.null_data_source.aws.outputs["user"]}" }

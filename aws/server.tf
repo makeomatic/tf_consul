@@ -97,7 +97,7 @@ data "template_file" "consul-server" {
         image = "${var.image}"
         args  = "${var.args}"
         dns_port = "${var.dns_port}"
-        advertise_interface = "${var.advertise_interface}"
+        advertise_ipnum = "${var.advertise_ipnum}"
 
         # Grab any node created first.
         default_args = "-bootstrap-expect ${var.servers} -join ${

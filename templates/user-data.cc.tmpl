@@ -1,0 +1,37 @@
+#cloud-config
+# vim: syntax=yaml
+#
+# This a terraform template file!
+
+merge_how: "dict(recurse_array,no_replace)+list(append)"
+
+runcmd:
+  # We can't write directly to /var/lib/cloud/scripts/per-once since stages
+  # are not treated in oreder on Systemd Xenial bugs bugs:(
+  - cloud-init-per once start-consul /var/lib/terraform/consul/start-consul.sh
+  - cloud-init-per once start-nomad /var/lib/terraform/consul/start-nomad.sh
+
+# ---------- Files ----------
+#
+
+write_files:
+  # Consul startup script
+- path: /var/lib/terraform/consul/start-consul.sh
+  owner: root:root
+  permissions: '0755'
+  encoding: b64
+  content: ${base64encode(start-consul-content)}
+
+  # Nomad startup script
+- path: /var/lib/terraform/consul/start-nomad.sh
+  owner: root:root
+  permissions: '0755'
+  encoding: b64
+  content: ${base64encode(start-nomad-content)}
+
+  # Nomad config template
+- path: /var/lib/terraform/consul/nomad.conf.hcl.tmpl
+  owner: root:root
+  permissions: '0644'
+  encoding: b64
+  content: ${base64encode(nomad-conf-content)}

@@ -22,4 +22,5 @@ dockerize -template $template:$confdir/$confname
 docker run -d --name=nomad-server --restart=always \
     -p 4646:4646 -p 4647:4647 -p 4648:4648 -p 4648:4648/udp \
     -v $confdir:/config -v /var/lib/nomad:/data \
+    --log-opt='max-size=25m' --log-opt='max-file=5' \
 $NOMAD_IMAGE

@@ -7,7 +7,7 @@
 eval $(wait_for_jsonenv -u /var/lib/terraform/consul/input.json)
 
 # Evalute default args and advertise address
-ARGS="${ARGS:--bootstrap-expect $SERVERS -join $SEED_ADDRESS}"
+args="${CONSUL_ARGS:--bootstrap-expect $SERVERS -join $SEED_ADDRESS}"
 
 # Create directory for consul volume
 mkdir -p /var/lib/consul
@@ -18,5 +18,6 @@ docker run -d --name=consul-server --restart=always \
     -p 8300:8300 -p 8301:8301 -p 8301:8301/udp -p 8302:8302 -p 8302:8302/udp \
     -p 8400:8400 -p 8500:8500 \
     -v /var/lib/consul:/data \
+    --log-opt='max-size=25m' --log-opt='max-file=5' \
 $CONSUL_IMAGE \
-    -advertise $(address_num $ADVERTISE_IPNUM) $ARGS
+    -advertise $(address_num $ADVERTISE_IPNUM) $args

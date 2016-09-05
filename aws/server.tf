@@ -10,14 +10,15 @@ resource "aws_instance" "server" {
     instance_type = "${var.instance_type}"
     key_name = "${var.key_name}"
 
-    # Use given availability zone or choose automatically in round-roubin manner,
-    # when cross_zone_distribution is enabled.
-    availability_zone = "${element(
-        concat(
-            list(var.availability_zone),
-            data.aws_availability_zones.available.names
-        ),  (count.index + 1) * var.cross_zone_distribution
-    )}"
+    # RR cross-zone distribution is enabled by default.
+    # Either set var.zone or set var.cross_zone_distribution to false to disable!
+    availability_zone = "${coalesce(
+            var.availability_zone,
+            element(
+                data.aws_availability_zones.available.names,
+                count.index * var.cross_zone_distribution
+            )
+        )}"
 
     # Use names for the default VPC.
     security_groups = [
@@ -43,14 +44,15 @@ resource "aws_instance" "vpc-server" {
     # Use subnet_id provided our choose from subnet_ids list in round-robin manner
     subnet_id = "${ coalesce(var.subnet_id, element(var.subnet_ids, count.index)) }"
 
-    # Use given availability zone or choose automatically in round-roubin manner,
-    # when cross_zone_distribution is enabled.
-    availability_zone = "${element(
-        concat(
-            list(var.availability_zone),
-            data.aws_availability_zones.available.names
-        ),  (count.index + 1) * var.cross_zone_distribution
-    )}"
+    # RR cross-zone distribution is enabled by default.
+    # Either set var.zone or set var.cross_zone_distribution to false to disable!
+    availability_zone = "${coalesce(
+            var.availability_zone,
+            element(
+                data.aws_availability_zones.available.names,
+                count.index * var.cross_zone_distribution
+            )
+        )}"
 
     # Non-default VPC uses security group IDs!
     vpc_security_group_ids = [

@@ -19,6 +19,22 @@ variable "availability_zone" {
     default = ""
 }
 
+variable "region_zones_count" {
+    # It's might be required for use in a resource count.
+    description = "Static number of region availability for a specific region."
+    default = {
+        us-east-1 = 4
+        us-west-1 = 2
+        us-west-2 = 3
+        eu-west-1 = 3
+        eu-central-1 = 2
+        ap-southeast-1 = 2
+        ap-southeast-2 = 2
+        ap-northeast-1 = 2
+        sa-east-1 = 3
+    }
+}
+
 variable "cross_zone_distribution" {
     description = "Flag specifies whether to distribute instance across availability zones."
     default = true
@@ -139,7 +155,7 @@ data "null_data_source" "aws" {
 # ======= AWS compute outputs
 #
 
-output "advertise_interface" { value = "${var.advertise_interface}" }
+output "advertise_ipnum" { value = "${var.advertise_ipnum}" }
 output "instance_type" { value = "${var.instance_type}" }
 
 output "key_name" { value = "${var.key_name}" }
@@ -147,6 +163,7 @@ output "key_path" { value = "${var.key_path}" }
 
 output "cross_zone_distribution" { value = "${var.cross_zone_distribution}" }
 output "region" { value = "${var.region}" }
+output "region_zones_count" { value = "${var.region_zones_count}" }
 output "availability_zone" { value = "${var.availability_zone}" }
 
 output "default-vpc" { value = "${var.default-vpc}" }

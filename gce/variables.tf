@@ -3,6 +3,11 @@ variable "servers" {
     description = "The number of Consul servers to launch."
 }
 
+variable "tagName" {
+    default = "consul"
+    description = "GCE consul instance name tag."
+}
+
 variable "nomad_enabled" {
     description = "Specifies whether to bootstrap nomad along with consul."
     default = true
@@ -36,9 +41,4 @@ variable "consul_args" {
 variable "consul_dnsport" {
     description = "Consul dns port to bind to."
     default = 8600
-}
-
-variable "tagName" {
-    default = "consul"
-    description = "AWS consul instance name tag."
 }

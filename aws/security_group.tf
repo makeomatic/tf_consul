@@ -61,15 +61,15 @@ resource "aws_security_group" "consul" {
 
     # Consul DNS ports
     ingress {
-        from_port = "${var.dns_port}"
-        to_port = "${var.dns_port}"
+        from_port = "${var.consul_dnsport}"
+        to_port = "${var.consul_dnsport}"
         protocol = "tcp"
         self = true
         security_groups = ["${var.AllowAPI_access_SGids}"]
     }
     ingress {
-        from_port = "${var.dns_port}"
-        to_port = "${var.dns_port}"
+        from_port = "${var.consul_dnsport}"
+        to_port = "${var.consul_dnsport}"
         protocol = "tcp"
         self = true
         security_groups = ["${var.AllowAPI_access_SGids}"]

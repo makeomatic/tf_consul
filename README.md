@@ -12,9 +12,9 @@ Consul Terraform module is used to bring up a consul cluster in a cloud provider
 |**servers**|Number of consul servers to bootstrap.|3|
 |**consul_image**|Docker container used to bootstrap consul server.|*gliderlabs/consul-server*|
 |**consul_args**|Arguments passed to consul server agent, can be used to override default configuration (ex. specifying atlas options).|`""`|
+|**consul_dnsport**|Sets port (tcp/udp) where consul will listen for DNS queries.|8600|
 |**key_name**|Specifies cloud provider key name (**required**).|`""`|
 |**key_path**|Specifies local path to the private ssh key used to connect to a cloud provider (**required**).|`""`|
-|**dns_port**|Sets port (tcp/udp) where consul will listen for DNS queries.|8600|
 |**nomad_enabled**|Specifies whether to start nomad or not.|`true`|
 |**nomad_image**|Specifies image used for nomad.|*makeomatic/nomad:0.4*|
 |**nomad_region**|Specifies nomad region.|*global*|

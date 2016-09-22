@@ -4,7 +4,7 @@
 #
 
 variable "platform" {
-    default = "ecs"
+    default = "ubuntu"
     description = "Sets which platform to use (by default ECS Optimized AMI)."
 }
 
@@ -62,16 +62,14 @@ variable "ami_map" {
     default = {
         # Get update ecs ami id here:
         # http://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-optimized_AMI.html
-        us-east-1-ecs = "ami-55870742"
-        us-west-1-ecs = "ami-07713767"
-        us-west-2-ecs = "ami-241bd844"
-        eu-west-1-ecs = "ami-c74127b4"
-        eu-central-1-ecs = "ami-3b54be54"
-        us-east-1-ubuntu = "ami-cf68e0d8"
-        us-west-1-ubuntu = "ami-e59bda85"
-        us-west-2-ubuntu = "ami-191fd379"
-        eu-west-1-ubuntu = "ami-1967056a"
-        eu-central-1-ubuntu = "ami-cbee1aa4"
+        #
+        # Depricating ECS, you'll should provide your map to use ecs platform.
+        #
+        us-east-1-ubuntu = "ami-a3641cb4"
+        us-west-1-ubuntu = "ami-26074946"
+        us-west-2-ubuntu = "ami-e1fe2281"
+        eu-west-1-ubuntu = "ami-47790334"
+        eu-central-1-ubuntu = "ami-8b03fee4"
     }
 }
 

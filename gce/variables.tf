@@ -4,8 +4,13 @@ variable "servers" {
 }
 
 variable "tagName" {
-    default = "consul"
+    default = ""
     description = "GCE consul instance name tag."
+}
+
+variable "project_tag" {
+    description = "Project tag used with name tagging"
+    default = ""
 }
 
 variable "nomad_enabled" {

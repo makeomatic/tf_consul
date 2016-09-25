@@ -14,7 +14,7 @@ provider "google" {
 
 resource "google_compute_instance" "server" {
     count = "${var.servers}"
-    name = "${var.tagName}-${count.index}"
+    name = "${data.null_data_source.consul.outputs.instance_name}-${count.index}"
     machine_type = "${var.machine_type}"
     tags = [ "${var.tags}" ]
 

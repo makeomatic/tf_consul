@@ -4,8 +4,13 @@ variable "servers" {
 }
 
 variable "tagName" {
-    default = "consul"
-    description = "AWS consul instance name tag."
+    default = ""
+    description = "AWS instance name."
+}
+
+variable "project_tag" {
+    description = "Project tag used with name tagging"
+    default = ""
 }
 
 variable "nomad_enabled" {

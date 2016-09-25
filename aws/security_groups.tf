@@ -6,6 +6,10 @@ resource "aws_security_group" "consul" {
     description = "Consul internal traffic + maintenance."
     vpc_id = "${var.vpc_id}"
 
+    tags = {
+        Name = "${var.project_tag}"
+    }
+
     // These are for maintenance
     ingress {
         from_port = 22
@@ -87,6 +91,10 @@ resource "aws_security_group" "nomad" {
     description = "Nomad security group."
     vpc_id = "${var.vpc_id}"
 
+    tags = {
+        Name = "${var.project_tag}"
+    }
+
     # Nomad http server (applies to server+client)
     ingress {
         from_port = 4646
@@ -126,6 +134,10 @@ resource "aws_security_group" "swarm" {
     name = "${var.swarm_sgname}"
     description = "Docker Swarm internal traffic + maintenance."
     vpc_id = "${var.vpc_id}"
+
+    tags = {
+        Name = "${var.project_tag}"
+    }
 
     /* ----- Swarm manager ----- */
     // Swarm docker hub must have

@@ -31,7 +31,7 @@ resource "aws_instance" "server" {
     ]
 
     tags {
-        Name = "${var.tagName}-${count.index}"
+        Name = "${data.null_data_source.consul.outputs.instance_name}-${count.index}"
     }
 
     # Pass user-data which is a merged cloud-init yaml
@@ -70,7 +70,7 @@ resource "aws_instance" "vpc-server" {
     ]
 
     tags {
-        Name = "${var.tagName}-${count.index}"
+        Name = "${data.null_data_source.consul.outputs.instance_name}-${count.index}"
     }
 
     # Pass user-data which is a merged cloud-init yaml

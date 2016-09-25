@@ -10,6 +10,7 @@ runcmd:
   # are not treated in oreder on Systemd Xenial bugs bugs:(
   - cloud-init-per once start-consul /var/lib/terraform/consul/start-consul.sh
   - cloud-init-per once start-nomad /var/lib/terraform/consul/start-nomad.sh
+  - cloud-init-per once start-swarm /var/lib/terraform/consul/start-swarm.sh
 
 # ---------- Files ----------
 #
@@ -28,6 +29,13 @@ write_files:
   permissions: '0755'
   encoding: b64
   content: ${base64encode(start-nomad-content)}
+
+  # Swarm startup script
+- path: /var/lib/terraform/consul/start-swarm.sh
+  owner: root:root
+  permissions: '0755'
+  encoding: b64
+  content: ${base64encode(start-swarm-content)}
 
   # Nomad config template
 - path: /var/lib/terraform/consul/nomad.conf.hcl.tmpl

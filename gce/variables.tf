@@ -42,3 +42,23 @@ variable "consul_dnsport" {
     description = "Consul dns port to bind to."
     default = 8600
 }
+
+variable "swarm_enabled" {
+    description = "Install swarm manager server along with consul."
+    default = false
+}
+
+variable "swarm_image" {
+    description = "Docker swarm container image."
+    default = "swarm"
+}
+
+variable "swarm_managerport" {
+    description = "Specifies swarm manager port."
+    default = 3375
+}
+
+variable "swarm_engineport" {
+    description = "Specifies swarm client node port."
+    default = 2375
+}

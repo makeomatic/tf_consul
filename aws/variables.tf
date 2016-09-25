@@ -43,7 +43,48 @@ variable "consul_dnsport" {
     default = 8600
 }
 
-variable "AllowAPI_access_SGids" {
-    description = "Allow access to API and DNS."
+variable "swarm_enabled" {
+    description = "Install swarm manager server along with consul."
+    default = false
+}
+
+variable "swarm_image" {
+    description = "Docker swarm container image."
+    default = "swarm"
+}
+
+variable "swarm_managerport" {
+    description = "Specifies swarm manager port."
+    default = 3375
+}
+
+variable "swarm_engineport" {
+    description = "Specifies swarm client node port."
+    default = 2375
+}
+
+
+variable "nomad_sgname" {
+    description = "Specifies nomad security group name."
+    default = "nomad"
+}
+
+variable "swarm_sgname" {
+    description = "Specifies swarm security group name."
+    default = "swarm"
+}
+
+variable "SGAllow_ConsulAPInDNS" {
+    description = "List of security group IDs allowed to access consul DNS and API."
+    default = []
+}
+
+variable "SGAllow_NomadAPI" {
+    description = "List of security group IDs allowed to access nomad Rest API."
+    default = []
+}
+
+variable "SGAllow_SwarmAPI" {
+    description = "List of security group IDs allowed to access swarm Rest API."
     default = []
 }

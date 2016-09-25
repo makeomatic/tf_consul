@@ -22,7 +22,12 @@ resource "aws_instance" "server" {
 
     # Use names for the default VPC.
     security_groups = [
-        "${concat(list(aws_security_group.consul.name), var.security_groups)}"
+        "${concat(
+                var.security_groups,
+                list(aws_security_group.consul.name,
+                     aws_security_group.nomad.name,
+                     aws_security_group.swarm.name)
+        )}"
     ]
 
     tags {
@@ -56,7 +61,12 @@ resource "aws_instance" "vpc-server" {
 
     # Non-default VPC uses security group IDs!
     vpc_security_group_ids = [
-        "${concat(list(aws_security_group.consul.id), var.security_groups)}"
+        "${concat(
+                var.security_groups,
+                list(aws_security_group.consul.id,
+                     aws_security_group.nomad.id,
+                     aws_security_group.swarm.id)
+        )}"
     ]
 
     tags {
@@ -120,6 +130,11 @@ data "null_data_source" "input" {
         nomad_image = "${var.nomad_image}"
         nomad_region = "${var.nomad_region}"
         nomad_datacenter = "${var.nomad_datacenter}"
+
+        # Swarm
+        swarm_enabled = "${var.swarm_enabled}"
+        swarm_image = "${var.swarm_image}"
+        swarm_managerport = "${var.swarm_managerport}"
     }
 }
 
@@ -150,6 +165,7 @@ data "template_file" "user-data" {
     vars {
         start-consul-content = "${file("${path.module}/../scripts/start-consul.sh")}"
         start-nomad-content = "${file("${path.module}/../scripts/start-nomad.sh")}"
+        start-swarm-content = "${file("${path.module}/../scripts/start-swarm.sh")}"
         nomad-conf-content = "${file("${path.module}/../templates/nomad.conf.hcl.tmpl")}"
     }
 }

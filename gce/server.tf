@@ -100,6 +100,11 @@ data "null_data_source" "input" {
         nomad_image = "${var.nomad_image}"
         nomad_region = "${var.nomad_region}"
         nomad_datacenter = "${var.nomad_datacenter}"
+
+        # Swarm
+        swarm_enabled = "${var.swarm_enabled}"
+        swarm_image = "${var.swarm_image}"
+        swarm_managerport = "${var.swarm_managerport}"
     }
 }
 
@@ -130,6 +135,7 @@ data "template_file" "user-data" {
     vars {
         start-consul-content = "${file("${path.module}/../scripts/start-consul.sh")}"
         start-nomad-content = "${file("${path.module}/../scripts/start-nomad.sh")}"
+        start-swarm-content = "${file("${path.module}/../scripts/start-swarm.sh")}"
         nomad-conf-content = "${file("${path.module}/../templates/nomad.conf.hcl.tmpl")}"
     }
 }

@@ -7,20 +7,48 @@ Consul Terraform module is used to bring up a consul cluster in a cloud provider
 
 ## Module configuration
 
+The correct list of configuration variables is available in `variables.tf`, down here only the most important configuration variables are described.
+
+### General
+
 |Variable|Description|Default|
 |---|---|---|
 |**servers**|Number of consul servers to bootstrap.|3|
-|**consul_image**|Docker container used to bootstrap consul server.|*gliderlabs/consul-server*|
-|**consul_args**|Arguments passed to consul server agent, can be used to override default configuration (ex. specifying atlas options).|`""`|
-|**consul_dnsport**|Sets port (tcp/udp) where consul will listen for DNS queries.|8600|
 |**key_name**|Specifies cloud provider key name (**required**).|`""`|
 |**key_path**|Specifies local path to the private ssh key used to connect to a cloud provider (**required**).|`""`|
+
+### Consul
+
+|Variable|Description|Default|
+|---|---|---|
+|**consul_image**|Docker container used to bootstrap consul server.|*stackfeed/consul:0.6-server*|
+|**consul_args**|Arguments passed to consul server agent, can be used to override default configuration (ex. specifying atlas options).|`""`|
+|**consul_dnsport**|Sets port (tcp/udp) where consul will listen for DNS queries.|8600|
+
+### Nomad
+
+|Variable|Description|Default|
+|---|---|---|
 |**nomad_enabled**|Specifies whether to start nomad or not.|`true`|
 |**nomad_image**|Specifies image used for nomad.|*makeomatic/nomad:0.4*|
 |**nomad_region**|Specifies nomad region.|*global*|
 |**nomad_datacenter**|Specifies nomad datacenter.|*dc1*|
+|**nomad_sgname**|Specifies nomad security group name.|*nomad*|
+
+### Swarm (docker swarm)
+
+|Variable|Description|Default|
+|---|---|---|
+|**swarm_enabled**|Specifies whether to start nomad or not.|`false`|
+|**swarm_image**|Specifies image used for nomad.|*swarm*|
 
 ### AWS variables
+
+|Variable|Description|Default|
+|---|---|---|
+|**SGAllow_ConsulAPInDNS**|List of security groups allowed to access consul API and DNS.|`[]`|
+|**SGAllow_NomadAPI**|List of security groups allowed to access nomad REST API.|`[]`|
+|**SGAllow_SwarmAPI**|List of security groups allowed to access swarm REST API.|`[]`|
 
 For the list of variables configuring deployment on AWS please refer to  [aws defaults](https://github.com/stackfeed/tf_default_compute#aws).
 

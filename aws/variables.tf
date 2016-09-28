@@ -93,3 +93,8 @@ variable "SGAllow_SwarmAPI" {
     description = "List of security group IDs allowed to access swarm Rest API."
     default = []
 }
+
+variable "ignore_changes" {
+    description = "List of ignored attributes preventing node recreation."
+    default = [ "ami", "user_data" ]
+}

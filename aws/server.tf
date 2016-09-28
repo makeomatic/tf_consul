@@ -10,6 +10,10 @@ resource "aws_instance" "server" {
     instance_type = "${var.instance_type}"
     key_name = "${var.key_name}"
 
+    lifecycle {
+        ignore_changes = [ "${var.ignore_changes}" ]
+    }
+
     # RR cross-zone distribution is enabled by default.
     # Either set var.zone or set var.cross_zone_distribution to false to disable!
     availability_zone = "${coalesce(
@@ -45,6 +49,10 @@ resource "aws_instance" "vpc-server" {
     ami = "${data.null_data_source.aws.outputs.ami}"
     instance_type = "${var.instance_type}"
     key_name = "${var.key_name}"
+
+    lifecycle {
+        ignore_changes = [ "${var.ignore_changes}" ]
+    }
 
     # Use subnet_id provided our choose from subnet_ids list in round-robin manner
     subnet_id = "${ coalesce(var.subnet_id, element(var.subnet_ids, count.index)) }"

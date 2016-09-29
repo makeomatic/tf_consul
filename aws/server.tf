@@ -124,7 +124,7 @@ resource "null_resource" "input_file" {
 data "null_data_source" "input" {
     inputs {
         # Address of the first created node - all others connect to the seeder.
-        seed_address = "${element(concat(aws_instance.server.*.public_ip, aws_instance.vpc-server.*.public_ip), 0)}"
+        seed_address = "${element(concat(aws_instance.server.*.private_ip, aws_instance.vpc-server.*.private_ip), 0)}"
         servers = "${var.servers}"
         advertise_ipnum = "${var.advertise_ipnum}"
 

@@ -46,11 +46,6 @@ variable "nat_ip" {
     default = ""
 }
 
-variable "metadata" {
-    description = "Metadata key/value pairs to make available from within the instance."
-    default = {}
-}
-
 variable "can_ip_forward" {
     description = "Whether to allow sending and receiving of packets with non-matching source or destination IPs."
     default = false
